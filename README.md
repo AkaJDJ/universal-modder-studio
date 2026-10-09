@@ -14,6 +14,8 @@ The app keeps its workspace, conversation settings, and downloaded Universal Mod
 
 ## Build on Windows
 
+(THIS ISN'T REQUIRED, ONLY A PRECAUTION IF IT CAN'T RUN THE COMMAND AUTOMATICALLY)
+
 Install Node.js 22 or later and pnpm, then run:
 
 ```powershell
