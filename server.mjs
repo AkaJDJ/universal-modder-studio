@@ -19,8 +19,25 @@ const PORT = Number(process.env.UM_STUDIO_PORT ?? 8765);
 const APP_KEY = randomBytes(24).toString('hex');
 const USER_HOME = os.homedir();
 const UV_INSTALL_DIR = path.join(DATA_DIR, 'tools');
+// Keep Universal Modder's managed Python runtime inside this app's own data
+// folder. This avoids split AppData installations when Studio is launched
+// outside another packaged application's filesystem sandbox.
+const APP_UV_ROOT = path.join(DATA_DIR, 'uv-runtime');
+const APP_UV_TOOL_DIR = path.join(APP_UV_ROOT, 'tools');
+const APP_UV_TOOL_BIN_DIR = path.join(APP_UV_ROOT, 'bin');
+const APP_UV_PYTHON_DIR = path.join(APP_UV_ROOT, 'python');
+const APP_UV_CACHE_DIR = path.join(APP_UV_ROOT, 'cache');
 const UM_EXE = process.env.UM_EXE || path.join(USER_HOME, '.local', 'bin', 'um.exe');
 const UV_EXE = process.env.UV_EXE || path.join(USER_HOME, '.local', 'bin', 'uv.exe');
+
+function appUvEnvironment() {
+  return {
+    UV_TOOL_DIR: APP_UV_TOOL_DIR,
+    UV_TOOL_BIN_DIR: APP_UV_TOOL_BIN_DIR,
+    UV_PYTHON_INSTALL_DIR: APP_UV_PYTHON_DIR,
+    UV_CACHE_DIR: APP_UV_CACHE_DIR,
+  };
+}
 async function locateCodex() {
   if (process.env.CODEX_EXE) return process.env.CODEX_EXE;
   const searchDirs = (process.env.PATH || '').split(path.delimiter).filter(Boolean);
@@ -104,6 +121,8 @@ function quotePowerShell(value) {
 async function locateUm() {
   if (process.env.UM_EXE) return process.env.UM_EXE;
   const candidates = [
+    path.join(APP_UV_TOOL_BIN_DIR, 'um.exe'),
+    path.join(APP_UV_TOOL_BIN_DIR, 'um'),
     path.join(USER_HOME, '.local', 'bin', 'um.exe'),
     path.join(USER_HOME, '.local', 'bin', 'um'),
     path.join(process.env.LOCALAPPDATA || USER_HOME, 'Programs', 'Python', 'Scripts', 'um.exe'),
@@ -118,7 +137,9 @@ async function locateUm() {
 
 async function locateUmPython() {
   const toolDirs = [
+    APP_UV_TOOL_DIR,
     process.env.UV_TOOL_DIR,
+    path.join(process.env.APPDATA || USER_HOME, 'uv', 'data', 'tools'),
     path.join(process.env.APPDATA || USER_HOME, 'uv', 'tools'),
     path.join(process.env.LOCALAPPDATA || USER_HOME, 'uv', 'tools'),
     path.join(USER_HOME, '.cache', 'uv', 'tools'),
@@ -159,7 +180,7 @@ async function runUm(executable, args, cwd, timeoutMs = 90_000) {
   if (!python) {
     return {
       ...result,
-      stderr: [output, 'Studio could not locate Universal Modder’s Python environment. Check the uv tool installation, then scan again.'].filter(Boolean).join('\n'),
+      stderr: [output, 'Studio cannot access this Universal Modder install. Open the setup prompt and choose Yes to create an app-managed install, then scan again.'].filter(Boolean).join('\n'),
     };
   }
 
@@ -204,9 +225,15 @@ async function universalModderStatus() {
       pluginAvailable = (report.installed || []).some((plugin) => plugin.name === 'universal-modder' && plugin.installed && plugin.enabled);
     } catch { /* The marketplace can be offline while local tools are still usable. */ }
   }
+  const um = await locateUm();
+  let umAvailable = false;
+  if (await exists(um)) {
+    const probe = await runUm(um, ['--help'], WORKSPACE, 20_000);
+    umAvailable = probe.code === 0;
+  }
   return {
     repoAvailable: await exists(REPO_DIR),
-    umAvailable: await exists(await locateUm()),
+    umAvailable,
     pluginAvailable,
     codexAvailable: codex.available,
     loggedIn: codex.loggedIn,
@@ -254,6 +281,7 @@ async function ensureUv() {
   const result = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', scriptPath], DATA_DIR, 180_000, null, {
     UV_INSTALL_DIR,
     UV_NO_MODIFY_PATH: '1',
+    ...appUvEnvironment(),
   });
   try { await unlink(scriptPath); } catch { /* keep setup moving */ }
   if (result.code !== 0) throw new Error('The official uv installer did not finish. ' + (result.stderr || result.stdout).trim().slice(-1200));
@@ -271,8 +299,11 @@ async function installUniversalModder() {
   const status = await universalModderStatus();
   if (!status.umAvailable) {
     const uv = await ensureUv();
-    const result = await run(uv, ['tool', 'install', '--from', REPO_DIR, 'universal-modder'], REPO_DIR, 900_000);
+    const result = await run(uv, ['tool', 'install', '--force', '--from', REPO_DIR, 'universal-modder'], REPO_DIR, 900_000, null, appUvEnvironment());
     if (result.code !== 0) throw new Error('Universal Modder could not be installed. ' + (result.stderr || result.stdout).trim().slice(-2400));
+    const installedUm = path.join(APP_UV_TOOL_BIN_DIR, 'um.exe');
+    const probe = await run(installedUm, ['--help'], WORKSPACE, 30_000, null, appUvEnvironment());
+    if (probe.code !== 0) throw new Error('Universal Modder was installed, but Studio could not start its app-managed copy. ' + (probe.stderr || probe.stdout).trim().slice(-1800));
   }
   const refreshed = await universalModderStatus();
   if (!refreshed.pluginAvailable) {

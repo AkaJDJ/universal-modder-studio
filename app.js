@@ -165,7 +165,7 @@ function paintSetupStatus() {
   const missing = setupNeeded();
   $('setup-title').textContent = missing ? 'Connect Universal Modder' : (appConfig.loggedIn ? 'Everything is ready' : 'Connect your Codex account');
   $('setup-copy').textContent = missing
-    ? 'Some Universal Modder files are missing. Choose Yes and sign in to Codex to install them automatically, or choose No to continue without setup.'
+    ? 'This app cannot use the current Universal Modder setup. Choose Yes and sign in to Codex to create a working app-managed install, or choose No to continue without setup.'
     : (appConfig.loggedIn ? 'Universal Modder is ready to use.' : 'Sign in to Codex with your ChatGPT account to use the AI guide. Your password stays with Codex.');
   $('setup-yes').innerHTML = (missing ? 'Yes, set it up' : 'Sign in to Codex') + ' <span>→</span>';
   $('setup-yes').disabled = setupBusy;
@@ -320,6 +320,7 @@ async function runSetupInstall() {
     if (setupNeeded()) throw new Error('Setup finished, but not all components are available. Choose Try again to refresh the setup.');
     showToast('Universal Modder setup is ready.');
     setTimeout(() => { if ($('setup-dialog').open) $('setup-dialog').close(); }, 900);
+    void detectGames();
   } catch (error) {
     showSetupError(error.message || 'Universal Modder setup did not finish.');
   }

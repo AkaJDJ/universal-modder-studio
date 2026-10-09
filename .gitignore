@@ -1,6 +1,7 @@
 node_modules/
 dist/
 workspace/
+uv-runtime/
 *.log
 Thumbs.db
 .DS_Store
