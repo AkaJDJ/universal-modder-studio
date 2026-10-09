@@ -28,6 +28,8 @@ The build creates both Windows downloads in `dist`. Windows code signing is not 
 
 AI follow-up questions run through the local Codex CLI as short, stateless turns using the signed-in user's account. Prompts and recent local conversation history are sent through Codex to OpenAI for each answer. The app does not access a user's ChatGPT conversation history, provide a separate Studio account system, or embed the publisher's credentials. Users need their own Codex CLI installation and account access.
 
+I admit, this entire thing was lowk made by AI lmao but you're using ai to do all of this with modding so ig it doesnt rlly matter
+
 ## Licenses
 
 This app's source is licensed under MIT. Universal Modder is a separate MIT-licensed project by Rehan: <https://github.com/rehan-remade/universal-modder>. Electron and the build dependencies have their own licenses; the packaged build includes the notices provided by those dependencies.
