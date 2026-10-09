@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d13">
+  <title>Universal Modder Studio</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Universal Modder Studio home">
+        <span class="brand-mark"><span>u</span><i></i></span>
+        <span class="brand-copy"><b>UNIVERSAL</b><small>MODDER STUDIO</small></span>
+      </a>
+
+      <div class="nav-label">WORKBENCH</div>
+      <nav class="primary-nav" aria-label="Workspaces">
+        <button class="nav-item active" data-view="fusion"><span class="nav-icon">✣</span><span>Game fusion</span><span class="nav-count">02</span></button>
+        <button class="nav-item" data-view="single"><span class="nav-icon">◈</span><span>Single game</span></button>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-label">UNIVERSAL MODDER</div>
+      <button class="nav-item" data-view="commands"><span class="nav-icon">⌘</span><span>Command deck</span></button>
+      <button class="nav-item" data-view="projects"><span class="nav-icon">▤</span><span>My workspace</span></button>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-note">
+        <span class="note-orb"></span>
+        <div><b>Built for your setup</b><small>Local tools · private workspace</small></div>
+      </div>
+      <div class="profile-row">
+        <div class="avatar">UM</div>
+        <div class="profile-copy"><b>Modder workspace</b><small>Local session</small></div>
+        <span class="more">•••</span>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>WORKBENCH</span><b>/</b><strong id="breadcrumb-title">GAME FUSION</strong></div>
+        <div class="topbar-right">
+          <button class="subtle-button" id="detect-top"><span class="sparkle">✦</span> Detect games</button>
+          <button class="connection-pill" id="connection" type="button" title="Open setup and account status"><span class="connection-dot"></span><span>Connecting tools</span></button>
+          <button class="icon-button" id="help-button" aria-label="About this app">?</button>
+        </div>
+      </header>
+
+      <section class="page-view active" id="view-fusion">
+        <div class="page-layout">
+          <div class="content-column">
+            <div class="eyebrow"><span class="eyebrow-line"></span> CROSS-GAME MODDING <span class="eyebrow-dot">✳</span></div>
+            <div class="hero-row">
+              <div><h1>Two games.<br><em>One new world.</em></h1><p class="hero-copy">Bring a world, mechanic, or character into another game. Your AI modding partner will figure out the right route with you.</p></div>
+              <div class="hero-art" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orb orb-left">A</div><div class="orb orb-right">B</div><div class="orb-core">✦</div><span class="orbit-caption">FUSION<br>ENGINE</span></div>
+            </div>
+
+            <div class="step-label"><span>01</span><div><b>Choose your pair</b><small>Which games are coming together?</small></div><span class="step-rule"></span><span class="step-tag">START HERE</span></div>
+            <div class="pair-card">
+              <div class="pair-grid">
+                <label class="game-field"><span class="field-kicker"><i class="game-dot dot-cyan"></i> GAME ONE</span><span class="input-wrap"><span class="input-prefix">◉</span><input id="game-one" list="game-options" placeholder="e.g. Minecraft" autocomplete="off"><span class="field-hint">Base or guest</span></span></label>
+                <div class="merge-mark"><span>+</span></div>
+                <label class="game-field"><span class="field-kicker"><i class="game-dot dot-violet"></i> GAME TWO</span><span class="input-wrap"><span class="input-prefix violet">◉</span><input id="game-two" list="game-options" placeholder="e.g. Skyrim" autocomplete="off"><span class="field-hint">Base or guest</span></span></label>
+              </div>
+              <datalist id="game-options"></datalist>
+              <div class="pair-footer"><span><span class="mini-check">✓</span> Type any title or choose a detected game</span><button class="primary-button" id="begin-fusion">Choose your base <span>→</span></button></div>
+              <div class="inline-error" id="fusion-error"></div>
+            </div>
+
+            <div class="conversation-stage hidden" id="fusion-chat-stage">
+              <div class="step-label"><span>02</span><div><b>Shape the fusion</b><small>Your modding partner will ask what matters next</small></div><span class="step-rule"></span><span class="step-tag live-tag"><i></i> AI GUIDE</span></div>
+              <div class="chat-card">
+                <div class="chat-heading"><div class="assistant-avatar">✳</div><div><b>Universal Modder</b><small><span class="live-dot"></span> AI modding partner</small></div><button class="quiet-action" id="reset-fusion">Start over</button></div>
+                <div class="base-choice" id="base-choice">
+                  <div class="chat-bubble assistant-bubble"><span class="bubble-label">YOUR GUIDE</span><p id="base-question">Which game do you want as the base?</p><small>The base game keeps its world, camera, and core loop.</small></div>
+                  <div class="base-options" id="base-options"></div>
+                </div>
+                <div class="chat-messages" id="fusion-messages"></div>
+                <form class="chat-compose" id="fusion-form"><textarea id="fusion-reply" rows="1" placeholder="Answer the next question…" aria-label="Your answer"></textarea><button type="submit" class="send-button" aria-label="Send message">↑</button></form>
+                <div class="chat-bottom"><span><i class="secure-dot"></i> Runs through your local Codex and Universal Modder setup</span><button class="build-button" id="build-fusion">Build first slice <span>↗</span></button></div>
+                <div class="inline-error chat-error" id="fusion-chat-error"></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="right-rail">
+            <div class="rail-heading"><span>PROJECT PATH</span><button class="rail-menu">•••</button></div>
+            <div class="path-card">
+              <div class="path-top"><span class="path-icon">◫</span><span class="path-status">READY TO PLAN</span></div>
+              <h3>Fusion project</h3><p>Pick a base, define what crosses over, then build a small working slice.</p>
+              <div class="path-steps"><div class="path-step current"><i>1</i><span>Choose two games</span></div><div class="path-step"><i>2</i><span>Pick the base game</span></div><div class="path-step"><i>3</i><span>Answer AI follow-ups</span></div><div class="path-step"><i>4</i><span>Build in your workspace</span></div></div>
+            </div>
+
+            <div class="rail-heading command-heading"><span>QUICK COMMANDS</span><button class="rail-link" data-view="commands">Open deck ↗</button></div>
+            <div class="command-card">
+              <button class="command-row" data-command="scan-list"><span class="command-icon cyan">⌕</span><span><b>Find installed games</b><small><code>um scan --list</code></small></span><span class="run-arrow">↗</span></button>
+              <button class="command-row" data-command="scan-current"><span class="command-icon violet">◎</span><span><b>Scan selected game</b><small><code>um scan "game"</code></small></span><span class="run-arrow">↗</span></button>
+              <button class="command-row" data-command="kb-current"><span class="command-icon amber">⌘</span><span><b>Search modding notes</b><small><code>um kb search "game"</code></small></span><span class="run-arrow">↗</span></button>
+            </div>
+            <div class="console-card hidden" id="quick-console"><div class="console-head"><span><i></i> COMMAND OUTPUT</span><button id="close-console">×</button></div><pre id="quick-output">Waiting for command…</pre></div>
+
+            <div class="guardrail-card"><span class="guardrail-symbol">⌑</span><div><b>Safe by design</b><p>Work stays in a separate project folder. Game files and saves stay untouched.</p></div></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page-view" id="view-single">
+        <div class="page-layout single-layout">
+          <div class="content-column">
+            <div class="eyebrow"><span class="eyebrow-line"></span> SINGLE-GAME MODDING <span class="eyebrow-dot">✳</span></div>
+            <div class="single-hero"><h1>Make it <em>your game.</em></h1><p class="hero-copy">Tell me what you want to change. We’ll check how the game is built and map out the shortest safe path.</p></div>
+            <div class="step-label"><span>01</span><div><b>Set the brief</b><small>Choose your game and describe the mod</small></div><span class="step-rule"></span><span class="step-tag">MOD BRIEF</span></div>
+            <div class="brief-card">
+              <label class="game-field full-field"><span class="field-kicker"><i class="game-dot dot-cyan"></i> GAME TO MOD</span><span class="input-wrap"><span class="input-prefix">◉</span><input id="single-game" list="game-options" placeholder="Choose or type a game title" autocomplete="off"><button type="button" class="detect-inline" id="detect-single">Detect</button></span></label>
+              <label class="description-field"><span class="field-kicker">WHAT SHOULD THE MOD DO?</span><textarea id="mod-idea" rows="4" placeholder="Describe the change in your own words…&#10;&#10;For example: Add a spell that summons a temporary ice bridge across water."></textarea><span class="field-hint">A rough idea is enough. Your AI guide will ask the useful follow-up questions.</span><div class="idea-nudge hidden" id="idea-nudge"></div></label>
+              <div class="options-head"><div><b>Project preferences</b><small>A few defaults to get the conversation moving</small></div><button class="toggle-advanced" id="toggle-advanced">More options <span>⌄</span></button></div>
+              <div class="preference-grid">
+                <label class="select-field"><span>PLAY MODE</span><select id="play-mode"><option value="offline">Offline / single-player</option><option value="private">Private server I control</option><option value="online">Online or competitive</option><option value="unsure">Not sure yet</option></select></label>
+                <label class="select-field"><span>ASSETS</span><select id="asset-pref"><option value="existing">Use game-style assets</option><option value="generate">Generate new art/audio</option><option value="code">Code/data only</option><option value="unsure">Let’s decide together</option></select></label>
+              </div>
+              <div class="advanced-options hidden" id="advanced-options">
+                <label class="select-field"><span>PLATFORM / STORE</span><input id="platform" type="text" placeholder="Steam, GOG, Windows…"></label>
+                <label class="select-field"><span>DELIVERABLE</span><select id="deliverable"><option value="working">Working mod in game</option><option value="prototype">Playable prototype</option><option value="plan">Plan and technical route first</option></select></label>
+                <label class="select-field wide-select"><span>KNOWN MOD LOADER OR TOOLS <i>(OPTIONAL)</i></span><input id="known-tools" type="text" placeholder="e.g. BepInEx, tModLoader, SMAPI"></label>
+              </div>
+              <div class="brief-footer"><span><span class="mini-check">✓</span> Defaults are safe for offline play</span><button class="primary-button" id="start-single">Start the conversation <span>→</span></button></div>
+              <div class="inline-error" id="single-error"></div>
+            </div>
+
+            <div class="conversation-stage hidden" id="single-chat-stage">
+              <div class="step-label"><span>02</span><div><b>Plan your mod</b><small>Follow-up questions shaped around your idea</small></div><span class="step-rule"></span><span class="step-tag live-tag"><i></i> AI GUIDE</span></div>
+              <div class="chat-card">
+                <div class="chat-heading"><div class="assistant-avatar">✳</div><div><b>Universal Modder</b><small><span class="live-dot"></span> AI modding partner</small></div><button class="quiet-action" id="reset-single">Start over</button></div>
+                <div class="chat-messages" id="single-messages"></div>
+                <form class="chat-compose" id="single-form"><textarea id="single-reply" rows="1" placeholder="Answer the next question…" aria-label="Your answer"></textarea><button type="submit" class="send-button" aria-label="Send message">↑</button></form>
+                <div class="chat-bottom"><span><i class="secure-dot"></i> Files are created only after you choose Build</span><button class="build-button" id="build-single">Build first slice <span>↗</span></button></div>
+                <div class="inline-error chat-error" id="single-chat-error"></div>
+              </div>
+            </div>
+          </div>
+          <aside class="right-rail">
+            <div class="rail-heading"><span>MOD WORKFLOW</span><button class="rail-menu">•••</button></div>
+            <div class="path-card">
+              <div class="path-top"><span class="path-icon violet-path">◈</span><span class="path-status">SAFE DEFAULTS</span></div>
+              <h3>From idea to in-game</h3><p>Universal Modder starts with the game’s real engine and existing mod route.</p>
+              <div class="path-steps"><div class="path-step current"><i>1</i><span>Choose your game</span></div><div class="path-step"><i>2</i><span>Describe the change</span></div><div class="path-step"><i>3</i><span>Answer what matters</span></div><div class="path-step"><i>4</i><span>Build a first slice</span></div></div>
+            </div>
+            <div class="rail-heading command-heading"><span>UNIVERSAL MODDER</span><button class="rail-link" data-view="commands">Commands ↗</button></div>
+            <div class="command-card">
+              <button class="command-row" data-command="scan-current-single"><span class="command-icon cyan">⌕</span><span><b>Recon this game</b><small><code>um scan "game"</code></small></span><span class="run-arrow">↗</span></button>
+              <button class="command-row" data-command="kb-current-single"><span class="command-icon amber">⌘</span><span><b>Find prior notes</b><small><code>um kb search "game"</code></small></span><span class="run-arrow">↗</span></button>
+            </div>
+            <div class="guardrail-card"><span class="guardrail-symbol">⌑</span><div><b>Before touching a game</b><p>Back up saves and confirm the mod route. The app never writes into your install folder.</p></div></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page-view simple-view" id="view-commands">
+        <div class="simple-header"><div class="eyebrow"><span class="eyebrow-line"></span> UNIVERSAL MODDER <span class="eyebrow-dot">✳</span></div><h1>Command <em>deck.</em></h1><p>Run the local Universal Modder tools without leaving the app.</p></div>
+        <div class="deck-grid">
+          <article class="deck-card"><span class="deck-icon cyan">⌕</span><div class="deck-copy"><small>RECON</small><h2>Find installed games</h2><p>Let Universal Modder look for games on this machine.</p><code>um scan --list</code></div><button class="deck-run" data-command="scan-list">Run command <span>→</span></button></article>
+          <article class="deck-card"><span class="deck-icon violet">◎</span><div class="deck-copy"><small>RECON</small><h2>Scan a game</h2><p>Check its engine, install path, mod loaders and likely routes.</p><input class="deck-input" id="deck-game" list="game-options" placeholder="Game title"></div><button class="deck-run" data-command="scan-deck">Run command <span>→</span></button></article>
+          <article class="deck-card"><span class="deck-icon amber">⌘</span><div class="deck-copy"><small>KNOWLEDGE BASE</small><h2>Search field notes</h2><p>Look for game-specific modding notes from other projects.</p><input class="deck-input" id="deck-query" placeholder="Game or engine"></div><button class="deck-run" data-command="kb-deck">Run command <span>→</span></button></article>
+          <article class="deck-card"><span class="deck-icon coral">✓</span><div class="deck-copy"><small>PRE-RELEASE</small><h2>Check a mod folder</h2><p>Lint your current app workspace before sharing a mod.</p><code>um publish check .</code></div><button class="deck-run" data-command="publish-check">Run command <span>→</span></button></article>
+        </div>
+        <div class="deck-output" id="deck-output"><div class="console-head"><span><i></i> OUTPUT</span><button id="clear-deck-output">Clear</button></div><pre id="deck-result">Choose a command above to see its output here.</pre></div>
+      </section>
+
+      <section class="page-view simple-view" id="view-projects">
+        <div class="simple-header"><div class="eyebrow"><span class="eyebrow-line"></span> YOUR LOCAL FILES <span class="eyebrow-dot">✳</span></div><h1>My <em>workspace.</em></h1><p>Every build started in this app gets its own folder here.</p></div>
+        <div class="workspace-card"><div class="workspace-folder">▰</div><div><span class="field-kicker">PROJECT ROOT</span><code id="workspace-path">Loading…</code><p>Universal Modder and Codex can create mod project files here after you select <b>Build first slice</b>.</p></div><button class="subtle-button" id="copy-workspace">Copy path</button></div>
+        <div class="guardrail-card wide-guardrail"><span class="guardrail-symbol">⌑</span><div><b>Local workspace boundary</b><p>The AI is instructed to work inside this folder. It won’t modify game installs, saves, registry settings, or publish anything without your approval.</p></div></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <dialog id="setup-dialog">
+    <div class="setup-dialog">
+      <button class="dialog-close" id="close-setup" aria-label="Close setup">×</button>
+      <div class="brand-mark about-mark"><span>u</span><i></i></div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> FIRST-RUN SETUP</div>
+      <h2 id="setup-title">Connect Universal Modder</h2>
+      <p id="setup-copy">Universal Modder is missing some files. Would you like this app to install its tools and Codex plugin?</p>
+      <div class="setup-missing" id="setup-missing"></div>
+      <div class="setup-progress hidden" id="setup-progress"><span class="setup-spinner"></span><div><b id="setup-progress-title">Preparing setup…</b><small id="setup-progress-copy">This can take a few minutes.</small></div></div>
+      <div class="setup-account hidden" id="setup-account"><button class="subtle-button" id="setup-login">Open Codex sign-in</button><button class="subtle-button" id="setup-refresh">I’m signed in — continue</button><a class="setup-link hidden" id="setup-get-codex" href="https://openai.com/codex" target="_blank" rel="noreferrer">Get Codex</a></div>
+      <div class="setup-error hidden" id="setup-error"></div>
+      <div class="setup-actions" id="setup-choices">
+        <button class="subtle-button" id="setup-no">No, not now</button>
+        <button class="primary-button" id="setup-yes">Yes, set it up <span>→</span></button>
+      </div>
+      <div class="setup-actions hidden" id="setup-retry-actions">
+        <button class="subtle-button" id="setup-close-error">Close</button>
+        <button class="primary-button" id="setup-retry">Try again <span>→</span></button>
+      </div>
+      <small class="setup-privacy">Setup downloads Universal Modder from GitHub and uv from Astral if needed. Sign-in opens Codex separately; your password stays with Codex.</small>
+    </div>
+  </dialog>
+  <dialog id="about-dialog"><div class="about-dialog"><button class="dialog-close" id="close-about">×</button><div class="brand-mark about-mark"><span>u</span><i></i></div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR LOCAL MODDING CO-PILOT</div><h2>Universal Modder Studio</h2><p>A focused workspace for cross-game fusions and single-game mods. Follow-ups come from your local Codex CLI with the Universal Modder plugin available; recon and knowledge commands run through the Universal Modder CLI you installed.</p><div class="about-meta"><span>LOCAL CODEX</span><span>UNIVERSAL MODDER PLUGIN</span><span>PRIVATE WORKSPACE</span></div></div></dialog>
+  <script src="/app.js" defer></script>
+</body>
+</html>

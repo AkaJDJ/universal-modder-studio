@@ -1,0 +1,54 @@
+{
+  "name": "universal-modder-studio",
+  "version": "1.0.4",
+  "description": "A desktop workbench for Universal Modder game projects.",
+  "author": "Universal Modder Studio contributors",
+  "license": "MIT",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "node ./node_modules/electron/install.js",
+    "dist:windows": "electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.universalmodder.studio",
+    "productName": "Universal Modder Studio",
+    "asar": true,
+    "asarUnpack": ["server.mjs"],
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "app.js",
+      "index.html",
+      "styles.css",
+      "server.mjs",
+      "main.cjs",
+      "README.md",
+      "LICENSE",
+      "icon.ico",
+      "package.json"
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "zip", "arch": ["x64"] }
+      ],
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
