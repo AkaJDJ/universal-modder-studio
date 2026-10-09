@@ -116,9 +116,38 @@ async function locateUm() {
   return candidates[0];
 }
 
-function locateUmPython() {
-  const toolDir = process.env.UV_TOOL_DIR || path.join(process.env.APPDATA || USER_HOME, 'uv', 'tools');
-  return path.join(toolDir, 'universal-modder', 'Scripts', 'python.exe');
+async function locateUmPython() {
+  const toolDirs = [
+    process.env.UV_TOOL_DIR,
+    path.join(process.env.APPDATA || USER_HOME, 'uv', 'tools'),
+    path.join(process.env.LOCALAPPDATA || USER_HOME, 'uv', 'tools'),
+    path.join(USER_HOME, '.cache', 'uv', 'tools'),
+    path.join(USER_HOME, '.local', 'share', 'uv', 'tools'),
+  ].filter(Boolean);
+  const seen = new Set();
+  for (const toolDir of toolDirs) {
+    const python = path.join(toolDir, 'universal-modder', 'Scripts', 'python.exe');
+    const key = path.normalize(python).toLocaleLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (await exists(python)) return python;
+  }
+
+  // Explorer can keep a stale UV_TOOL_DIR in its process environment after
+  // Python/uv has changed. Ask the installed uv executable for its active
+  // tool directory as a final lookup instead of trusting that inherited value.
+  const uv = await locateUv();
+  if (uv) {
+    const result = await run(uv, ['tool', 'dir'], WORKSPACE, 15_000);
+    if (result.code === 0) {
+      const toolDir = result.stdout.trim().split(/\r?\n/).map((line) => line.trim()).find((line) => path.isAbsolute(line));
+      if (toolDir) {
+        const python = path.join(toolDir, 'universal-modder', 'Scripts', 'python.exe');
+        if (await exists(python)) return python;
+      }
+    }
+  }
+  return '';
 }
 
 async function runUm(executable, args, cwd, timeoutMs = 90_000) {
@@ -126,8 +155,13 @@ async function runUm(executable, args, cwd, timeoutMs = 90_000) {
   const output = (result.stdout + '\n' + result.stderr).trim();
   if (result.code === 0 || !/uv trampoline failed to canonicalize script path/i.test(output)) return result;
 
-  const python = locateUmPython();
-  if (!(await exists(python))) return result;
+  const python = await locateUmPython();
+  if (!python) {
+    return {
+      ...result,
+      stderr: [output, 'Studio could not locate Universal Modder’s Python environment. Check the uv tool installation, then scan again.'].filter(Boolean).join('\n'),
+    };
+  }
 
   const fallback = await run(python, ['-c', 'from um.cli import main; main()', ...args], cwd, timeoutMs);
   if (fallback.code === 0) return fallback;
