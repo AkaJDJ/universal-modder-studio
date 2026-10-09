@@ -30,7 +30,7 @@ The build creates both Windows downloads in `dist`. Windows code signing is not 
 
 AI follow-up questions run through the local Codex CLI as short, stateless turns using the signed-in user's account. Prompts and recent local conversation history are sent through Codex to OpenAI for each answer. The app does not access a user's ChatGPT conversation history, provide a separate Studio account system, or embed the publisher's credentials. Users need their own Codex CLI installation and account access.
 
-I admit, this entire thing was lowk made by AI lmao but you're using ai to do all of this with modding so ig it doesnt rlly matter
+I admit, this entire thing was lowk made by AI lmao but you're using ai to do all of this with modding so ig it doesnt rlly matter, also with this note im js spiting user BraveCaperCat2 because they went on a whole rant ab it on the universal modder issues page
 
 ## Licenses
 
