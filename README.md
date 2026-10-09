@@ -4,6 +4,8 @@ Universal Modder Studio is a Windows desktop app for planning cross-game mashups
 
 ## Windows downloads
 
+THIS PROGRAM REQUIRES A CODEX (New chatgpt app, not classic) ACCOUNT FOR IT TO WORK
+
 The `dist` folder contains two Windows downloads: a per-user installer `.exe` and a portable `.zip` with the packaged app. The installer does not require administrator access. Extract the ZIP before running the app. Both formats need the same first-run prerequisites and setup: the app checks for Universal Modder, and if files are missing, choose **Yes** to install the tools and Codex plugin, or **No** to keep using the app without them. The ZIP does not bundle Codex, Universal Modder, uv, Python, or account credentials.
 
 Automatic setup needs the Codex app or CLI installed and signed in with ChatGPT. The app opens Codex's own sign-in window; it does not collect or save passwords. It downloads Universal Modder from the project's GitHub repository and installs its command line with uv. Setup needs an internet connection. Python is managed by uv if it is not already available.
